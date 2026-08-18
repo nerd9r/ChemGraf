@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Impressum — ChemGraf</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#e9edf1; --surface:#fff; --ink:#19212b; --ink2:#4d6076;
+  --slate:#587088; --slate-deep:#384850; --teal:#88c0c0; --teal-ink:#3e8b88;
+  --rule:#ccd6e0;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 var(--pad)}
+a{color:var(--slate)}
+header{position:sticky;top:0;background:rgba(233,237,241,.88);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.bar{display:flex;align-items:center;gap:14px;height:62px}
+.bar img{width:27px;height:auto;display:block}
+.brand{font-family:var(--sans);font-weight:700;font-size:18px;letter-spacing:-.03em;
+  color:var(--ink);text-decoration:none}
+.brand em{font-style:normal;color:var(--teal-ink)}
+main{padding:clamp(40px,6vw,80px) 0 80px}
+h1{font-family:var(--sans);font-size:clamp(28px,4vw,38px);font-weight:600;
+  letter-spacing:-.022em;margin:0 0 8px}
+.law{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink2);margin:0 0 36px}
+dl{margin:0;border-top:1px solid var(--rule)}
+dt{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--teal-ink);padding:18px 0 4px}
+dd{margin:0;padding:0 0 18px;border-bottom:1px solid var(--rule);color:var(--ink2)}
+footer{padding:36px 0 56px;font-family:var(--mono);font-size:11.5px;color:#7f8fa0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <img src="mark.png" alt="">
+    <a class="brand" href="index.html">Chem<em>Graf</em></a>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <h1>Impressum</h1>
+  <p class="law">Offenlegung gemäß §&nbsp;5 ECG und §&nbsp;25 Mediengesetz</p>
+
+  <!-- FILL IN before publishing. §5 ECG requires at minimum: name, geographic
+       address (a real street address, not a Postfach), and a direct contact
+       (e-mail). If you have a Gewerbeberechtigung, also state the trade,
+       the Gewerbebehörde (Magistrat/BH), and WKO membership. If you have a
+       UID number, state it; delete the row otherwise. -->
+  <dl>
+    <dt>Medieninhaber und Herausgeber</dt>
+    <dd>Nicolas Kratena</dd>
+
+    <dt>Anschrift</dt>
+    <dd>Marianne-Pollak-Gasse<br>1100 Wien, Österreich</dd>
+
+    <dt>Kontakt</dt>
+    <dd><a href="mailto:hello@chemgraf.eu">hello@chemgraf.eu</a></dd>
+
+    <dt>Unternehmensgegenstand</dt>
+    <dd>Entwicklung und Vertrieb von Software für die Chemie</dd>
+
+    <dt>Grundlegende Richtung der Website</dt>
+    <dd>Information über die Software ChemGraf.</dd>
+  </dl>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 ChemGraf · <a href="index.html">chemgraf.eu</a></div>
+</footer>
+
+</body>
+</html>

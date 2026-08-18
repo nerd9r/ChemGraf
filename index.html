@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChemGraf — a free structure editor that predicts the spectrum</title>
+<meta name="description" content="A native chemical structure editor for Windows. The drawing half is free forever; the prediction stack — NMR, IR, MS, pKa — is a one-time purchase with a lifetime licence. Runs offline. In development.">
+<link rel="icon" href="icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://chemgraf.eu/">
+<meta property="og:title" content="ChemGraf — a free structure editor that predicts the spectrum">
+<meta property="og:description" content="The full editor free forever. Predictions — NMR with real spin-system simulation, IR, MS, pKa — as a one-time purchase, lifetime licence. Offline, nothing uploaded.">
+<meta property="og:image" content="https://chemgraf.eu/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#e9edf1; --surface:#fff; --ink:#19212b; --ink2:#4d6076;
+  --slate:#587088; --slate-deep:#384850; --teal:#88c0c0; --teal-ink:#3e8b88;
+  --rule:#ccd6e0; --muted:#a9b7c6;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+h1,h2,h3,.sans{font-family:var(--sans);letter-spacing:-.022em}
+a{color:var(--slate)}
+:focus-visible{outline:2px solid var(--teal-ink);outline-offset:3px;border-radius:2px}
+
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink2);margin:0 0 18px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(233,237,241,.88);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.bar{display:flex;align-items:center;gap:14px;height:62px}
+.bar img{width:27px;height:auto;display:block}
+.brand{font-family:var(--sans);font-weight:700;font-size:18px;letter-spacing:-.03em}
+.brand em{font-style:normal;color:var(--teal-ink)}
+nav{margin-left:auto;display:flex;gap:24px;font-family:var(--mono);font-size:12.5px}
+nav a{color:var(--ink2);text-decoration:none;padding:4px 0;border-bottom:1px solid transparent}
+nav a:hover{color:var(--ink);border-color:var(--teal)}
+@media(max-width:640px){nav{display:none}}
+
+/* hero */
+.hero{padding:clamp(40px,5.5vw,72px) 0 clamp(28px,4vw,48px);
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:clamp(28px,4vw,56px);align-items:center}
+@media(max-width:900px){.hero{grid-template-columns:1fr}}
+h1{font-size:clamp(34px,4.6vw,54px);line-height:1.06;font-weight:600;margin:0 0 20px}
+h1 span{color:var(--teal-ink)}
+.lede{font-size:19px;color:var(--ink2);margin:0 0 28px;max-width:38ch}
+.lede strong{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{font-family:var(--sans);font-size:14px;font-weight:500;text-decoration:none;
+  white-space:nowrap;padding:11px 18px;border-radius:3px;border:1px solid var(--slate-deep);
+  background:var(--slate-deep);color:#fff;transition:.15s}
+.btn:hover{background:#2b3742;border-color:#2b3742}
+.btn.ghost{background:transparent;color:var(--slate-deep);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--slate);background:rgba(88,112,136,.07)}
+
+/* instrument panel */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+  box-shadow:0 1px 2px rgba(25,33,43,.05),0 14px 40px -22px rgba(25,33,43,.35);overflow:hidden}
+.panel .strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 16px;border-bottom:1px solid var(--rule);background:#f6f8fa;
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;color:var(--ink2)}
+.pill{margin-left:auto;background:rgba(136,192,192,.24);color:var(--teal-ink);
+  padding:2px 9px;border-radius:2px;font-size:10px;letter-spacing:.11em}
+.panel svg{display:block;width:100%;height:auto}
+.b{stroke:var(--slate-deep);stroke-width:1.45;stroke-linecap:round;fill:none}
+.atom{font-family:var(--sans);font-size:19px;font-weight:600;fill:var(--slate-deep);
+  text-anchor:middle;dominant-baseline:central}
+.tag{font-family:var(--mono);font-size:12px;fill:var(--teal-ink)}
+.axis{stroke:var(--muted);stroke-width:1;fill:none}
+.tick{font-family:var(--mono);font-size:14px;fill:var(--ink2);text-anchor:middle}
+.pk{font-family:var(--mono);font-size:14.5px;fill:var(--ink2);text-anchor:middle}
+.pk tspan{fill:var(--teal-ink)}
+.trace{fill:none;stroke:var(--slate);stroke-width:1.9;stroke-linejoin:round}
+
+/* claims */
+.claims{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+  border-block:1px solid var(--rule);margin-top:clamp(8px,2vw,20px)}
+@media(max-width:760px){.claims{grid-template-columns:1fr}}
+.claims div{background:var(--paper);padding:26px 26px 30px}
+.claims h3{margin:0 0 8px;font-size:16px;font-weight:600}
+.claims p{margin:0;font-size:15.5px;color:var(--ink2)}
+
+section{padding:clamp(56px,8vw,104px) 0}
+.shead{max-width:60ch;margin-bottom:clamp(28px,4vw,48px)}
+.shead h2{font-size:clamp(26px,3.2vw,38px);font-weight:600;margin:0 0 14px;line-height:1.14}
+.shead p{margin:0;color:var(--ink2);font-size:17.5px}
+
+/* pitch band */
+#sketch{background:var(--surface);border-block:1px solid var(--rule);
+  padding:clamp(40px,5vw,64px) 0}
+#sketch .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+  gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:820px){#sketch .wrap{grid-template-columns:1fr}}
+#sketch h2{font-size:clamp(23px,2.6vw,31px);font-weight:600;margin:0;line-height:1.16}
+#sketch p{margin:0 0 15px;color:var(--ink2);font-size:17px}
+#sketch p:last-child{margin-bottom:0}
+#sketch strong{color:var(--ink);font-weight:600}
+
+/* versions */
+#versions{background:var(--surface);border-block:1px solid var(--rule)}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+@media(max-width:760px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--surface);padding:clamp(22px,3vw,32px)}
+.tier.pro{background:#fafcfd}
+.tiername{font-family:var(--sans);font-size:19px;font-weight:600;margin:0 0 3px;
+  letter-spacing:-.025em}
+.tiername em{font-style:normal;color:var(--teal-ink)}
+.price{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--teal-ink);margin:0 0 16px}
+.tier > p.what{margin:0 0 18px;font-size:16px;color:var(--ink2);
+  padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.tier ul{margin:0;padding:0;list-style:none}
+.tier li{position:relative;padding:6px 0 6px 20px;font-size:15.5px;color:var(--ink2)}
+.tier li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;
+  border-radius:50%;background:var(--teal)}
+.tiernote{margin:22px 0 0;font-size:15px;color:var(--ink2);max-width:70ch}
+.tiernote strong{color:var(--ink);font-weight:600}
+
+/* stack grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.cell{background:var(--paper);padding:24px}
+.cell h3{margin:0 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--teal-ink);font-weight:500}
+.cell p{margin:0;font-size:15.5px;color:var(--ink2)}
+.cell sup,.cell sub{font-size:.7em}
+
+/* screenshots */
+.shots{display:grid;gap:22px}
+.shots-row{display:grid;gap:22px}
+.shots-row.two{grid-template-columns:1fr 1fr}
+.shots-row.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:860px){.shots-row.two,.shots-row.three{grid-template-columns:1fr}}
+.shot{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.shot img{display:block;width:100%;height:auto;cursor:zoom-in}
+.shot .ph{display:none;aspect-ratio:16/10;place-items:center;background:
+  repeating-linear-gradient(45deg,#f4f7f9 0 10px,#eef2f5 10px 20px);
+  font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.shot.missing img{display:none}
+.shot.missing .ph{display:grid}
+figcaption{padding:13px 16px;font-size:14.5px;color:var(--ink2);border-top:1px solid var(--rule)}
+figcaption strong{font-family:var(--sans);font-weight:600;color:var(--ink);display:block;font-size:15px}
+
+/* lightbox */
+.lightbox{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+  background:rgba(15,23,32,.88);cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:calc(100vw - 48px);max-height:calc(100vh - 48px);width:auto;height:auto;
+  display:block;border-radius:4px;box-shadow:0 12px 48px rgba(0,0,0,.5)}
+body.lightbox-open{overflow:hidden}
+
+footer{padding:52px 0 64px;font-size:14.5px;color:var(--ink2)}
+footer p{margin:0 0 12px;max-width:64ch}
+.fine{font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#7f8fa0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <img src="mark.png" alt="">
+    <span class="brand">Chem<em>Graf</em></span>
+    <nav>
+      <a href="#what">What it does</a>
+      <a href="#versions">Free &amp; paid</a>
+      <a href="#look">Screenshots</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Native C++ · offline · in development</p>
+      <h1>Draw the structure.<br>Read the <span>spectrum</span>.</h1>
+      <p class="lede">A chemical drawing program with the prediction stack inside it, instead of behind a server.<br><strong>The editor is free, forever.</strong><br>Your molecules never leave the machine.</p>
+      <div class="cta">
+        <a class="btn" href="mailto:hello@chemgraf.eu?subject=ChemGraf%20beta">Join the release list</a>
+        <a class="btn ghost" href="#versions">Free vs. paid</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="strip"><span>ETHYL ACETATE</span><span>C₄H₈O₂</span><span>¹H · 400 MHz</span><span class="pill">PREDICTED</span></div>
+      <svg viewBox="0 0 760 392" role="img" aria-label="Skeletal structure of ethyl acetate beside its predicted proton NMR spectrum, showing a quartet at 4.12 ppm, a singlet at 2.04 ppm and a triplet at 1.26 ppm.">
+        <g transform="translate(18,2) scale(1.42)">
+          <path class="b" d="M48 92 L83 72"/>
+          <path class="b" d="M79 72 L79 43"/>
+          <path class="b" d="M87 72 L87 43"/>
+          <path class="b" d="M83 72 L108.5 86.5"/>
+          <path class="b" d="M127.5 86.5 L153 72"/>
+          <path class="b" d="M153 72 L188 92"/>
+          <text class="atom" x="83" y="32">O</text>
+          <text class="atom" x="118" y="92">O</text>
+          <text class="tag" x="41" y="112" style="font-size:8.5px">a</text>
+          <text class="tag" x="151" y="58" style="font-size:8.5px">b</text>
+          <text class="tag" x="194" y="112" style="font-size:8.5px">c</text>
+        </g>
+        <g transform="translate(0,192)">
+          <path class="trace" d="M 40.0,168.0 L 41.2,168.0 L 42.5,168.0 L 43.7,168.0 L 44.9,168.0 L 46.2,168.0 L 47.4,168.0 L 48.6,168.0 L 49.9,168.0 L 51.1,168.0 L 52.3,168.0 L 53.6,168.0 L 54.8,168.0 L 56.0,168.0 L 57.2,168.0 L 58.5,168.0 L 59.7,168.0 L 60.9,168.0 L 62.2,168.0 L 63.4,168.0 L 64.6,168.0 L 65.9,168.0 L 67.1,168.0 L 68.3,168.0 L 69.6,168.0 L 70.8,168.0 L 72.0,168.0 L 73.3,168.0 L 74.5,168.0 L 75.7,168.0 L 77.0,168.0 L 78.2,168.0 L 79.4,168.0 L 80.7,168.0 L 81.9,168.0 L 83.1,168.0 L 84.4,168.0 L 85.6,168.0 L 86.8,168.0 L 88.1,168.0 L 89.3,168.0 L 90.5,168.0 L 91.8,167.9 L 93.0,167.9 L 94.2,167.9 L 95.4,167.9 L 96.7,167.9 L 97.9,167.9 L 99.1,167.9 L 100.4,167.9 L 101.6,167.9 L 102.8,167.9 L 104.1,167.9 L 105.3,167.9 L 106.5,167.9 L 107.8,167.9 L 109.0,167.9 L 110.2,167.9 L 111.5,167.9 L 112.7,167.9 L 113.9,167.9 L 115.2,167.9 L 116.4,167.9 L 117.6,167.9 L 118.9,167.9 L 120.1,167.9 L 121.3,167.9 L 122.6,167.9 L 123.8,167.9 L 125.0,167.9 L 126.2,167.9 L 127.5,167.9 L 128.7,167.9 L 129.9,167.9 L 131.2,167.8 L 132.4,167.8 L 133.6,167.8 L 134.9,167.8 L 136.1,167.8 L 137.3,167.8 L 138.6,167.8 L 139.8,167.8 L 141.0,167.8 L 142.3,167.8 L 143.5,167.7 L 144.7,167.7 L 146.0,167.7 L 147.2,167.7 L 148.4,167.6 L 149.7,167.6 L 150.9,167.6 L 152.1,167.5 L 153.4,167.5 L 154.6,167.4 L 155.8,167.4 L 157.1,167.3 L 158.3,167.2 L 159.5,167.1 L 160.8,167.0 L 162.0,166.8 L 163.2,166.6 L 164.4,166.3 L 165.7,165.8 L 166.9,165.1 L 168.1,163.9 L 169.4,161.6 L 170.6,157.1 L 171.8,152.2 L 173.1,154.3 L 174.3,156.6 L 175.5,155.0 L 176.8,148.3 L 178.0,134.4 L 179.2,127.6 L 180.5,140.3 L 181.7,148.9 L 182.9,149.6 L 184.2,142.7 L 185.4,129.3 L 186.6,131.5 L 187.9,146.1 L 189.1,154.1 L 190.3,156.6 L 191.6,155.0 L 192.8,152.1 L 194.0,155.9 L 195.2,160.9 L 196.5,163.5 L 197.7,164.9 L 198.9,165.7 L 200.2,166.2 L 201.4,166.5 L 202.6,166.8 L 203.9,166.9 L 205.1,167.1 L 206.3,167.2 L 207.6,167.3 L 208.8,167.4 L 210.0,167.4 L 211.3,167.5 L 212.5,167.5 L 213.7,167.6 L 215.0,167.6 L 216.2,167.6 L 217.4,167.7 L 218.7,167.7 L 219.9,167.7 L 221.1,167.7 L 222.4,167.7 L 223.6,167.8 L 224.8,167.8 L 226.1,167.8 L 227.3,167.8 L 228.5,167.8 L 229.8,167.8 L 231.0,167.8 L 232.2,167.8 L 233.4,167.8 L 234.7,167.8 L 235.9,167.9 L 237.1,167.9 L 238.4,167.9 L 239.6,167.9 L 240.8,167.9 L 242.1,167.9 L 243.3,167.9 L 244.5,167.9 L 245.8,167.9 L 247.0,167.9 L 248.2,167.9 L 249.5,167.9 L 250.7,167.9 L 251.9,167.9 L 253.2,167.9 L 254.4,167.9 L 255.6,167.9 L 256.9,167.9 L 258.1,167.9 L 259.3,167.9 L 260.6,167.9 L 261.8,167.9 L 263.0,167.9 L 264.2,167.9 L 265.5,167.9 L 266.7,167.9 L 267.9,167.9 L 269.2,167.9 L 270.4,167.9 L 271.6,167.9 L 272.9,167.9 L 274.1,167.9 L 275.3,167.9 L 276.6,167.9 L 277.8,167.9 L 279.0,167.9 L 280.3,167.9 L 281.5,167.9 L 282.7,167.9 L 284.0,167.9 L 285.2,167.9 L 286.4,167.9 L 287.7,167.9 L 288.9,167.9 L 290.1,167.9 L 291.4,167.9 L 292.6,167.9 L 293.8,167.9 L 295.1,167.9 L 296.3,167.9 L 297.5,167.9 L 298.8,167.9 L 300.0,167.9 L 301.2,167.9 L 302.4,167.9 L 303.7,167.9 L 304.9,167.9 L 306.1,167.9 L 307.4,167.9 L 308.6,167.9 L 309.8,167.9 L 311.1,167.9 L 312.3,167.9 L 313.5,167.9 L 314.8,167.9 L 316.0,167.9 L 317.2,167.9 L 318.5,167.9 L 319.7,167.9 L 320.9,167.9 L 322.2,167.9 L 323.4,167.9 L 324.6,167.9 L 325.9,167.9 L 327.1,167.9 L 328.3,167.9 L 329.6,167.9 L 330.8,167.9 L 332.0,167.9 L 333.2,167.9 L 334.5,167.9 L 335.7,167.9 L 336.9,167.9 L 338.2,167.9 L 339.4,167.9 L 340.6,167.9 L 341.9,167.9 L 343.1,167.9 L 344.3,167.9 L 345.6,167.9 L 346.8,167.9 L 348.0,167.9 L 349.3,167.9 L 350.5,167.9 L 351.7,167.9 L 353.0,167.9 L 354.2,167.9 L 355.4,167.9 L 356.7,167.9 L 357.9,167.9 L 359.1,167.9 L 360.4,167.9 L 361.6,167.9 L 362.8,167.9 L 364.1,167.9 L 365.3,167.9 L 366.5,167.9 L 367.8,167.9 L 369.0,167.9 L 370.2,167.9 L 371.4,167.9 L 372.7,167.9 L 373.9,167.9 L 375.1,167.9 L 376.4,167.9 L 377.6,167.9 L 378.8,167.9 L 380.1,167.9 L 381.3,167.9 L 382.5,167.9 L 383.8,167.9 L 385.0,167.9 L 386.2,167.9 L 387.5,167.9 L 388.7,167.9 L 389.9,167.9 L 391.2,167.9 L 392.4,167.9 L 393.6,167.9 L 394.9,167.9 L 396.1,167.9 L 397.3,167.9 L 398.6,167.9 L 399.8,167.9 L 401.0,167.9 L 402.2,167.9 L 403.5,167.9 L 404.7,167.9 L 405.9,167.9 L 407.2,167.8 L 408.4,167.8 L 409.6,167.8 L 410.9,167.8 L 412.1,167.8 L 413.3,167.8 L 414.6,167.8 L 415.8,167.8 L 417.0,167.8 L 418.3,167.8 L 419.5,167.8 L 420.7,167.8 L 422.0,167.8 L 423.2,167.7 L 424.4,167.7 L 425.7,167.7 L 426.9,167.7 L 428.1,167.7 L 429.4,167.7 L 430.6,167.7 L 431.8,167.6 L 433.1,167.6 L 434.3,167.6 L 435.5,167.6 L 436.8,167.5 L 438.0,167.5 L 439.2,167.5 L 440.4,167.4 L 441.7,167.4 L 442.9,167.3 L 444.1,167.3 L 445.4,167.2 L 446.6,167.1 L 447.8,167.0 L 449.1,166.9 L 450.3,166.8 L 451.5,166.7 L 452.8,166.5 L 454.0,166.3 L 455.2,166.0 L 456.5,165.7 L 457.7,165.3 L 458.9,164.8 L 460.2,164.1 L 461.4,163.1 L 462.6,161.8 L 463.9,159.9 L 465.1,156.9 L 466.3,152.0 L 467.6,143.2 L 468.8,125.8 L 470.0,89.2 L 471.2,30.6 L 472.5,33.9 L 473.7,92.5 L 474.9,127.4 L 476.2,143.9 L 477.4,152.4 L 478.6,157.1 L 479.9,160.0 L 481.1,161.9 L 482.3,163.2 L 483.6,164.1 L 484.8,164.8 L 486.0,165.3 L 487.3,165.7 L 488.5,166.0 L 489.7,166.3 L 491.0,166.5 L 492.2,166.6 L 493.4,166.8 L 494.7,166.9 L 495.9,167.0 L 497.1,167.1 L 498.4,167.1 L 499.6,167.2 L 500.8,167.3 L 502.1,167.3 L 503.3,167.4 L 504.5,167.4 L 505.8,167.4 L 507.0,167.5 L 508.2,167.5 L 509.4,167.5 L 510.7,167.5 L 511.9,167.5 L 513.1,167.6 L 514.4,167.6 L 515.6,167.6 L 516.8,167.6 L 518.1,167.6 L 519.3,167.6 L 520.5,167.6 L 521.8,167.6 L 523.0,167.6 L 524.2,167.6 L 525.5,167.6 L 526.7,167.6 L 527.9,167.6 L 529.2,167.6 L 530.4,167.6 L 531.6,167.6 L 532.9,167.6 L 534.1,167.6 L 535.3,167.6 L 536.6,167.6 L 537.8,167.6 L 539.0,167.5 L 540.2,167.5 L 541.5,167.5 L 542.7,167.5 L 543.9,167.5 L 545.2,167.4 L 546.4,167.4 L 547.6,167.4 L 548.9,167.3 L 550.1,167.3 L 551.3,167.2 L 552.6,167.1 L 553.8,167.1 L 555.0,167.0 L 556.3,166.9 L 557.5,166.7 L 558.7,166.6 L 560.0,166.4 L 561.2,166.1 L 562.4,165.8 L 563.7,165.3 L 564.9,164.7 L 566.1,163.9 L 567.4,162.6 L 568.6,160.5 L 569.8,156.7 L 571.1,149.2 L 572.3,134.8 L 573.5,124.7 L 574.8,135.1 L 576.0,142.2 L 577.2,139.2 L 578.4,124.3 L 579.7,96.0 L 580.9,93.8 L 582.1,122.2 L 583.4,138.5 L 584.6,142.3 L 585.8,136.1 L 587.1,125.0 L 588.3,133.4 L 589.5,148.3 L 590.8,156.3 L 592.0,160.3 L 593.2,162.5 L 594.5,163.8 L 595.7,164.7 L 596.9,165.3 L 598.2,165.8 L 599.4,166.1 L 600.6,166.4 L 601.9,166.6 L 603.1,166.8 L 604.3,166.9 L 605.6,167.0 L 606.8,167.1 L 608.0,167.2 L 609.2,167.3 L 610.5,167.3 L 611.7,167.4 L 612.9,167.4 L 614.2,167.5 L 615.4,167.5 L 616.6,167.5 L 617.9,167.6 L 619.1,167.6 L 620.3,167.6 L 621.6,167.6 L 622.8,167.7 L 624.0,167.7 L 625.3,167.7 L 626.5,167.7 L 627.7,167.7 L 629.0,167.7 L 630.2,167.8 L 631.4,167.8 L 632.7,167.8 L 633.9,167.8 L 635.1,167.8 L 636.4,167.8 L 637.6,167.8 L 638.8,167.8 L 640.1,167.8 L 641.3,167.8 L 642.5,167.8 L 643.8,167.8 L 645.0,167.8 L 646.2,167.9 L 647.4,167.9 L 648.7,167.9 L 649.9,167.9 L 651.1,167.9 L 652.4,167.9 L 653.6,167.9 L 654.8,167.9 L 656.1,167.9 L 657.3,167.9 L 658.5,167.9 L 659.8,167.9 L 661.0,167.9 L 662.2,167.9 L 663.5,167.9 L 664.7,167.9 L 665.9,167.9 L 667.2,167.9 L 668.4,167.9 L 669.6,167.9 L 670.9,167.9 L 672.1,167.9 L 673.3,167.9 L 674.6,167.9 L 675.8,167.9 L 677.0,167.9 L 678.2,167.9 L 679.5,167.9 L 680.7,167.9 L 681.9,167.9 L 683.2,167.9 L 684.4,167.9 L 685.6,167.9 L 686.9,167.9 L 688.1,167.9 L 689.3,167.9 L 690.6,167.9 L 691.8,167.9 L 693.0,167.9 L 694.3,167.9 L 695.5,167.9 L 696.7,167.9 L 698.0,167.9 L 699.2,167.9 L 700.4,168.0 L 701.7,168.0 L 702.9,168.0 L 704.1,168.0 L 705.4,168.0 L 706.6,168.0 L 707.8,168.0 L 709.1,168.0 L 710.3,168.0 L 711.5,168.0 L 712.8,168.0 L 714.0,168.0 L 715.2,168.0 L 716.4,168.0 L 717.7,168.0 L 718.9,168.0 L 720.1,168.0 L 721.4,168.0 L 722.6,168.0 L 723.8,168.0 L 725.1,168.0 L 726.3,168.0 L 727.5,168.0 L 728.8,168.0 L 730.0,168.0"/>
+          <path class="axis" d="M40 168 L730 168"/>
+          <g class="axis">
+            <path d="M199 168 L199 173"/><path d="M338 168 L338 173"/>
+            <path d="M477 168 L477 173"/><path d="M617 168 L617 173"/>
+          </g>
+          <text class="tick" x="199" y="187">4</text>
+          <text class="tick" x="338" y="187">3</text>
+          <text class="tick" x="477" y="187">2</text>
+          <text class="tick" x="617" y="187">1</text>
+          <text class="tick" x="694" y="188" style="font-size:12px">δ / ppm</text>
+          <text class="pk" x="182" y="9"><tspan>b</tspan>  4.12 q, 2H</text>
+          <text class="pk" x="182" y="27">J = 7.1 Hz</text>
+          <text class="pk" x="472" y="9"><tspan>a</tspan>  2.04 s, 3H</text>
+          <text class="pk" x="580" y="70"><tspan>c</tspan>  1.26 t, 3H</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="claims">
+    <div><h3>Nothing is uploaded</h3><p>Everything runs locally. No account, no server round trip, no structure leaving your network.</p></div>
+    <div><h3>Weights we own</h3><p>Every shipped model is either permissively licensed or trained here from scratch on licence-checked data.</p></div>
+    <div><h3>One executable</h3><p>Dependency-light and statically linked. Install and run on any machine. No more python venvs.</p></div>
+  </div>
+</div>
+
+<section id="sketch">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Why ChemGraf</p>
+      <h2>Free, offline, and yours to keep.</h2>
+    </div>
+    <div>
+      <p>Free drawing programs you can install and keep are disappearing. What is left is a browser tab, a paid seat, or a toolkit that wants Python first. ChemGraf puts that kind of program back on the desktop: publication-grade drawings and spectra, nothing uploaded.</p>
+      <p><strong>The editor is free and stays free:</strong> the whole drawing surface, the file formats, IUPAC names in both directions. No watermark, no account, no expiry.</p>
+      <p>The paid version adds the prediction stack and 3D conformers informing the spectra: <strong>a single payment with a lifetime licence,</strong> no subscription.</p>
+    </div>
+  </div>
+</section>
+
+<section id="what">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">What is in it</p>
+      <h2>The prediction stack is what you would be paying for</h2>
+      <p>Drawing is free. The reason to buy is what happens after you draw — and all of it runs on your own machine.</p>
+    </div>
+    <div class="grid">
+      <div class="cell"><h3>Nuclei</h3><p>¹H, ¹³C, ¹⁹F, ³¹P shifts. <sup>n</sup>J<sub>HH</sub>, <sup>n</sup>J<sub>FH</sub> and <sup>n</sup>J<sub>FC</sub> couplings.</p></div>
+      <div class="cell"><h3>Real multiplets</h3><p>Spin systems solved by exact diagonalisation, not additivity rules. A quartet is a quartet because the maths says so.</p></div>
+      <div class="cell"><h3>Conformers</h3><p>ETKDG embedding and MMFF94s optimisation in the editor. Boltzmann-weighted ensembles feed the spectra.</p></div>
+      <div class="cell"><h3>Infrared</h3><p>Own model, trained in house. Conformer-averaged rather than single-geometry.</p></div>
+      <div class="cell"><h3>Mass spectrometry</h3><p>EI fragmentation and ESI-MS/MS, with bond dissociation energies informing the fragments.</p></div>
+      <div class="cell"><h3>Physicochemical</h3><p>pK<sub>a</sub> from rules, a GNN and Taft corrections. logP, molar refractivity, BDE, UV/Vis rules.</p></div>
+      <div class="cell"><h3>Steric fields</h3><p>ASO and AEIF occupancy and charge vectors, pose-invariant, dumped as plain arrays.</p></div>
+      <div class="cell"><h3>Molecular passport</h3><p>QED, synthetic accessibility, PAINS / Brenk / NIH / ZINC filters, Lipinski, Veber, Ghose, Egan, Muegge.</p></div>
+      <div class="cell"><h3>Still growing</h3><p>The stack is the living half of the program. New property and reactivity predictions are added as they become available.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="versions">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Free and paid</p>
+      <h2>One program, two versions. The drawing half is free.</h2>
+      <p>No trial, no cut-down demo: the free version is the same editor the paid one is built on.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <p class="tiername">ChemGraf</p>
+        <p class="price">Free · forever · no account</p>
+        <p class="what">The complete structure editor. Everything you need to draw a molecule and put it in a document.</p>
+        <ul>
+          <li>The full canvas — bonds, rings, templates, stereo wedges, brackets, arrows, shapes, text</li>
+          <li>Multi-page sheets, alignment, z-order, clean-up layout</li>
+          <li>Every file format: CDXML, MOL/SDF (V2000 and V3000), SMILES, XYZ</li>
+          <li>Export to PNG, SVG and EMF; paste into Word or PowerPoint</li>
+          <li>IUPAC name to structure and structure to name</li>
+          <li>Formula, mass, exact mass, structure checking</li>
+          <li>No watermark, no page limit, no expiry, nothing uploaded</li>
+        </ul>
+      </div>
+      <div class="tier pro">
+        <p class="tiername">ChemGraf <em>Pro</em></p>
+        <p class="price">One payment · lifetime licence</p>
+        <p class="what">Everything above, plus the prediction stack. Buy it once, at a price aimed at individuals rather than institutions.</p>
+        <ul>
+          <li>¹H, ¹³C, ¹⁹F and ³¹P NMR with real spin-system simulation</li>
+          <li>Coupling constants and multiplets solved, not guessed from rules</li>
+		  <li>3D view with conformers and MMFF94s minimisation</li>
+          <li>Infrared, conformer-averaged, from a model trained here</li>
+          <li>EI-MS fragmentation and ESI-MS/MS</li>
+          <li>pK<sub>a</sub>, logP, molar refractivity, bond dissociation energies</li>
+          <li>Boltzmann-weighted conformer ensembles feeding the spectra</li>
+          <li>Medchem passport: QED, synthetic accessibility, PAINS and friends</li>
+          <li>Updates for the version you bought, without a renewal date</li>
+        </ul>
+      </div>
+    </div>
+    <p class="tiernote"><strong>Two promises in writing.</strong> File formats will never move behind a paywall. And a lifetime licence means the copy you bought keeps working: no server call to check, so nothing can switch it off later.</p>
+  </div>
+</section>
+
+<section id="look">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">The program</p>
+      <h2>What it looks like</h2>
+      <p>Screenshots of the program as it stands today, not mock-ups. Light and dark themes, a resizable tool strip, and an info panel that keeps the numbers next to the drawing.</p>
+    </div>
+    <div class="shots">
+      <div class="shots-row two">
+        <figure class="shot">
+          <img src="shot-editor.png" alt="The editor" loading="lazy" onerror="this.closest('.shot').classList.add('missing')">
+          <div class="ph"><span>shot-editor.png</span></div>
+          <figcaption><strong>The editor</strong>Canvas, tool strip and info panel</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="shot-nmr.png" alt="The NMR tab" loading="lazy" onerror="this.closest('.shot').classList.add('missing')">
+          <div class="ph"><span>shot-nmr.png</span></div>
+          <figcaption><strong>The NMR tab</strong>Predicted spectrum beside the structure</figcaption>
+        </figure>
+      </div>
+      <div class="shots-row three">
+        <figure class="shot">
+          <img src="shot-3d.png" alt="The 3D view" loading="lazy" onerror="this.closest('.shot').classList.add('missing')">
+          <div class="ph"><span>shot-3d.png</span></div>
+          <figcaption><strong>The 3D view</strong>Minimised conformers of the drawn molecule</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="shot-naming.png" alt="The naming tab" loading="lazy" onerror="this.closest('.shot').classList.add('missing')">
+          <div class="ph"><span>shot-naming.png</span></div>
+          <figcaption><strong>The naming tab</strong>Name anatomy with hover-highlight</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="shot-stoich.png" alt="Stoichiometry" loading="lazy" onerror="this.closest('.shot').classList.add('missing')">
+          <div class="ph"><span>shot-stoich.png</span></div>
+          <figcaption><strong>Stoichiometry</strong>Reaction table printed on the canvas</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Want to hear when the first build ships? <a href="mailto:hello@chemgraf.eu">hello@chemgraf.eu</a></p>
+    <p class="fine">
+      Free and paid feature lines describe the intended first release and may still move
+      before there is anything to buy.<br>
+      © 2026 ChemGraf · chemgraf.eu · <a href="impressum.html">Impressum</a>
+    </p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+<script>
+(function(){
+  var box = document.getElementById('lightbox');
+  var big = box.querySelector('img');
+  function close(){
+    box.classList.remove('open');
+    document.body.classList.remove('lightbox-open');
+  }
+  document.querySelectorAll('.shot img').forEach(function(img){
+    img.addEventListener('click', function(){
+      big.src = img.src;
+      big.alt = img.alt;
+      box.classList.add('open');
+      document.body.classList.add('lightbox-open');
+    });
+  });
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
+
+</body>
+</html>
