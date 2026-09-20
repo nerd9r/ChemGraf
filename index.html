@@ -65,6 +65,9 @@ h1 span{color:var(--teal-ink)}
 .btn:hover{background:#2b3742;border-color:#2b3742}
 .btn.ghost{background:transparent;color:var(--slate-deep);border-color:var(--rule)}
 .btn.ghost:hover{border-color:var(--slate);background:rgba(88,112,136,.07)}
+.alsoline{font-size:15.5px;color:var(--ink2);margin:18px 0 0;max-width:40ch}
+.alsoline a{color:var(--teal-ink);font-weight:600;text-decoration-thickness:1px;
+  text-underline-offset:2px}
 
 /* instrument panel */
 .panel{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
@@ -127,6 +130,9 @@ section{padding:clamp(56px,8vw,104px) 0}
 .tier li{position:relative;padding:6px 0 6px 20px;font-size:15.5px;color:var(--ink2)}
 .tier li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;
   border-radius:50%;background:var(--teal)}
+.trylink{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:15px;color:var(--ink2)}
+.trylink a{color:var(--teal-ink);font-weight:600;text-underline-offset:2px}
 .tiernote{margin:22px 0 0;font-size:15px;color:var(--ink2);max-width:70ch}
 .tiernote strong{color:var(--ink);font-weight:600}
 
@@ -178,6 +184,7 @@ footer p{margin:0 0 12px;max-width:64ch}
       <a href="#what">What it does</a>
       <a href="#versions">Free &amp; paid</a>
       <a href="#look">Screenshots</a>
+      <a href="editor/">Try it</a>
     </nav>
   </div>
 </header>
@@ -193,6 +200,8 @@ footer p{margin:0 0 12px;max-width:64ch}
         <a class="btn" href="mailto:hello@chemgraf.eu?subject=ChemGraf%20beta">Join the release list</a>
         <a class="btn ghost" href="#versions">Free vs. paid</a>
       </div>
+      <p class="alsoline">Or <a href="editor/">draw one in your browser</a> — the editor
+      itself, running in the page. Nothing to install, nothing uploaded.</p>
     </div>
 
     <div class="panel">
@@ -297,6 +306,8 @@ footer p{margin:0 0 12px;max-width:64ch}
           <li>Formula, mass, exact mass, structure checking</li>
           <li>No watermark, no page limit, no expiry, nothing uploaded</li>
         </ul>
+        <p class="trylink">Part of this — the drawing surface, without the naming —
+        already runs in a browser tab: <a href="editor/">try it now</a>.</p>
       </div>
       <div class="tier pro">
         <p class="tiername">ChemGraf <em>Pro</em></p>

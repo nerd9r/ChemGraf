@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChemGraf</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #f0f0f0; }
+  #canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+  #status { position: fixed; left: 10px; bottom: 8px; font: 12px system-ui, sans-serif;
+            color: #666; pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="canvas" tabindex="0" oncontextmenu="event.preventDefault()"></canvas>
+<div id="status">loading the editor…</div>
+<script src="chemgraf.js"></script>
+<script>
+/* ChemGraf Web Editor — host page and window-level API (PLAN-WEB-EDITOR §5).
+ *
+ * Embed as one iframe:  <iframe src="chemgraf-web/index.html?mode=mol">
+ * (mode=rxn for a reaction). The iframe's window then exposes, in the
+ * shape the ELN's own editor uses:
+ *   setMolRxnfile(text)  load a molfile (mode mol) or rxnfile (mode rxn); "" clears
+ *   getMolRxnfile()      the drawing as molfile / rxnfile (V2000 unless V3000 is needed)
+ *   getSmiles()          the drawing as SMILES (CXSMILES with enhanced stereo)
+ *   addTemplate(molfile) host template (recorded; not in the menu yet)
+ *   isReady              true once the editor runs
+ * plus setCdxml(xml) / getCdxml() / getSvg() / getLastError(), and a
+ * 'chemgraf-ready' event on the window when isReady turns true.
+ */
+(function () {
+  var params = new URLSearchParams(location.search);
+  var mode = params.get('mode') === 'rxn' ? 'rxn' : 'mol';
+  var canvas = document.getElementById('canvas');
+  var status = document.getElementById('status');
+  var M = null;
+
+  function str(fn) { return M ? M.ccall(fn, 'string', [], []) : ''; }
+  function put(fn, arg) { return !!M && M.ccall(fn, 'number', ['string'], [arg || '']) === 1; }
+
+  window.isReady = false;
+  window.chemgrafMode = mode;
+  window.setMolRxnfile = function (t) { return put('chemgraf_web_set_molrxn', t); };
+  window.getMolRxnfile = function () { return str('chemgraf_web_get_molrxn'); };
+  window.getSmiles = function () { return str('chemgraf_web_get_smiles'); };
+  window.setCdxml = function (x) { return put('chemgraf_web_set_cdxml', x); };
+  window.getCdxml = function () { return str('chemgraf_web_get_cdxml'); };
+  window.getSvg = function () { return str('chemgraf_web_get_svg'); };
+  window.addTemplate = function (m) { return put('chemgraf_web_add_template', m); };
+  window.getLastError = function () { return str('chemgraf_web_last_error'); };
+
+  createChemGraf({
+    canvas: canvas,
+    print: function (t) { console.log(t); },
+    printErr: function (t) { console.error(t); },
+    setStatus: function (t) { status.textContent = t; }
+  }).then(function (mod) {
+    M = mod;
+    M.ccall('chemgraf_web_set_mode', null, ['string'], [mode]);
+    function resize() {
+      M.ccall('chemgraf_web_resize', null, ['number', 'number'],
+              [window.innerWidth | 0, window.innerHeight | 0]);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    // The browser hands clipboard content over in the paste event, which
+    // fires in the same task as the Ctrl+V keydown — before the animation
+    // frame in which the editor handles the key. Prime the editor's slot.
+    document.addEventListener('paste', function (e) {
+      var cd = e.clipboardData;
+      if (!cd) return;
+      M.ccall('chemgraf_web_paste', null, ['string', 'string'],
+              [cd.getData('text/plain') || '', cd.getData('text/html') || '']);
+      e.preventDefault();
+    });
+    // A dropped file lands on the canvas as the desktop's drag-and-drop
+    // would: through the same loaders, by extension.
+    canvas.addEventListener('dragover', function (e) { e.preventDefault(); });
+    canvas.addEventListener('drop', function (e) {
+      e.preventDefault();
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (!f) return;
+      f.text().then(function (txt) {
+        var name = (f.name || '').toLowerCase();
+        if (/\.(cdxml)$/.test(name)) window.setCdxml(txt);
+        else window.setMolRxnfile(txt);
+      });
+    });
+    canvas.focus();
+    window.isReady = true;
+    status.textContent = '';
+    window.dispatchEvent(new CustomEvent('chemgraf-ready'));
+  }).catch(function (e) {
+    status.textContent = 'the editor could not start: ' + e;
+    console.error(e);
+  });
+})();
+</script>
+</body>
+</html>
