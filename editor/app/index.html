@@ -87,6 +87,71 @@
         else window.setMolRxnfile(txt);
       });
     });
+    // Soft keyboard (touch screens only): a phone raises its keyboard for
+    // a focused text field and nothing else, so a hidden <input> stands in
+    // whenever the editor wants text (a caption, an atom label, the SMILES
+    // box). What the keyboard produces is diffed against what was already
+    // sent — a phone's IME rewrites words — and goes in as characters and
+    // Backspaces; the key events stop at the input so SDL's window
+    // listener never sees them a second time.
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      var kb = document.createElement('input');
+      kb.type = 'text';
+      kb.setAttribute('autocomplete', 'off');
+      kb.setAttribute('autocorrect', 'off');
+      kb.setAttribute('autocapitalize', 'off');
+      kb.spellcheck = false;
+      kb.style.cssText = 'position:fixed;left:0;bottom:0;width:1px;height:1px;' +
+                         'opacity:0.01;border:0;padding:0;font-size:16px;';
+      document.body.appendChild(kb);
+      var SENT = '  ';   // a stub so Backspace always has a character to eat
+      var sent = '';
+      function kbReset() {
+        sent = '';
+        kb.value = SENT;
+        try { kb.setSelectionRange(SENT.length, SENT.length); } catch (e) {}
+      }
+      function wantsKb() { return M.ccall('chemgraf_web_wants_keyboard', 'number', [], []) === 1; }
+      function key(name) { M.ccall('chemgraf_web_key', null, ['string'], [name]); }
+      kbReset();
+      kb.addEventListener('input', function () {
+        var v = kb.value;
+        if (v.slice(0, SENT.length) !== SENT) {   // deleted into the stub
+          key('Backspace');
+          kbReset();
+          return;
+        }
+        var t = v.slice(SENT.length), p = 0;
+        while (p < t.length && p < sent.length && t.charAt(p) === sent.charAt(p)) p++;
+        for (var i = sent.length; i > p; i--) key('Backspace');
+        if (t.length > p) M.ccall('chemgraf_web_text_input', null, ['string'], [t.slice(p)]);
+        sent = t;
+      });
+      var keyNames = {Enter: 'Return', Escape: 'Escape', ArrowLeft: 'Left', ArrowRight: 'Right',
+                      ArrowUp: 'Up', ArrowDown: 'Down', Tab: 'Tab', Home: 'Home', End: 'End'};
+      kb.addEventListener('keydown', function (e) {
+        e.stopPropagation();
+        if (keyNames[e.key]) {
+          key(keyNames[e.key]);
+          if (e.key === 'Enter' || e.key === 'Escape') kbReset();
+          e.preventDefault();
+        }
+      });
+      kb.addEventListener('keyup', function (e) { e.stopPropagation(); });
+      kb.addEventListener('keypress', function (e) { e.stopPropagation(); });
+      // iOS raises the keyboard only from inside a touch handler, so the
+      // tap that lands on a text field is where the focus happens; the
+      // poll below covers Android and puts the focus back afterwards.
+      canvas.addEventListener('touchend', function () {
+        if (wantsKb() && document.activeElement !== kb) kb.focus({preventScroll: true});
+      }, {passive: true});
+      (function kbPoll() {
+        var want = wantsKb();
+        if (want && document.activeElement !== kb) kb.focus({preventScroll: true});
+        else if (!want && document.activeElement === kb) { kb.blur(); kbReset(); canvas.focus(); }
+        requestAnimationFrame(kbPoll);
+      })();
+    }
     canvas.focus();
     window.isReady = true;
     status.textContent = '';

@@ -55,8 +55,14 @@ included. That question is open and is larger than this one.
 2. **`mode=rxn` is unverified in the browser.** The page is pinned to
    `?mode=mol`; do not add a reaction tab until it has been tested.
 3. **Settings do not persist** across reloads (IDBFS is not wired up).
-4. **Touch is not wired up**, so the page shows a "needs a bigger screen"
-   message below 820 px instead of the editor.
+4. **Touch — done 2026-09-21.** Below 640 px the editor uses its own compact
+   layout (tool tiles along the bottom, one finger draws, two fingers zoom and
+   pan, a hidden field raises the soft keyboard), and the page no longer gates
+   phones: the toolbar tightens, the footer prose goes, `100dvh` keeps the
+   canvas clear of the address bar. Verified only with Chrome's touch
+   emulation (`cpp/tools/web_touch_harness.py`, 390×800), not on a physical
+   phone yet. Still missing on touch: long-press as right-click; the
+   periodic-table popup is wider than a phone screen (the quick row is fine).
 
 ## Checks worth running after the first deploy
 
