@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChemGraf — a free structure editor that predicts the spectrum</title>
-<meta name="description" content="A native chemical structure editor for Windows. The drawing half is free forever; the prediction stack — NMR, IR, MS, pKa — is a one-time purchase with a lifetime licence. Runs offline. In development.">
+<meta name="description" content="A native chemical structure editor for Windows. The drawing half is free forever; the prediction stack — 1D and 2D NMR, IR, MS, pKa — is a one-time purchase with a lifetime licence. Runs offline. In development.">
 <link rel="icon" href="icon.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://chemgraf.eu/">
 <meta property="og:title" content="ChemGraf — a free structure editor that predicts the spectrum">
-<meta property="og:description" content="The full editor free forever. Predictions — NMR with real spin-system simulation, IR, MS, pKa — as a one-time purchase, lifetime licence. Offline, nothing uploaded.">
+<meta property="og:description" content="The full editor free forever. Predictions — six-nucleus NMR with real spin-system simulation, HSQC, COSY and HMBC, IR, MS, pKa — as a one-time purchase, lifetime licence. Offline, nothing uploaded.">
 <meta property="og:image" content="https://chemgraf.eu/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,7 +113,7 @@ section{padding:clamp(56px,8vw,104px) 0}
 #sketch strong{color:var(--ink);font-weight:600}
 
 /* versions */
-#versions{background:var(--surface);border-block:1px solid var(--rule)}
+#what,#look{background:var(--surface);border-block:1px solid var(--rule)}
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);
   border:1px solid var(--rule);border-radius:4px;overflow:hidden}
 @media(max-width:760px){.tiers{grid-template-columns:1fr}}
@@ -181,7 +181,8 @@ footer p{margin:0 0 12px;max-width:64ch}
     <img src="mark.png" alt="">
     <span class="brand">Chem<em>Graf</em></span>
     <nav>
-      <a href="#what">What it does</a>
+      <a href="#editor">Editor</a>
+      <a href="#what">Predictions</a>
       <a href="#versions">Free &amp; paid</a>
       <a href="#look">Screenshots</a>
       <a href="editor/">Try it</a>
@@ -245,7 +246,7 @@ footer p{margin:0 0 12px;max-width:64ch}
 <div class="wrap">
   <div class="claims">
     <div><h3>Nothing is uploaded</h3><p>Everything runs locally. No account, no server round trip, no structure leaving your network.</p></div>
-    <div><h3>Weights we own</h3><p>Every shipped model is either permissively licensed or trained here from scratch on licence-checked data.</p></div>
+    <div><h3>Weights we own</h3><p>Every model we sell is either permissively licensed or trained here on data whose licence has been checked.</p></div>
     <div><h3>One executable</h3><p>Dependency-light and statically linked. Install and run on any machine. No more python venvs.</p></div>
   </div>
 </div>
@@ -258,8 +259,29 @@ footer p{margin:0 0 12px;max-width:64ch}
     </div>
     <div>
       <p>Free drawing programs you can install and keep are disappearing. What is left is a browser tab, a paid seat, or a toolkit that wants Python first. ChemGraf puts that kind of program back on the desktop: publication-grade drawings and spectra, nothing uploaded.</p>
-      <p><strong>The editor is free and stays free:</strong> the whole drawing surface, the file formats, IUPAC names in both directions. No watermark, no account, no expiry.</p>
+      <p><strong>The editor is free and stays free:</strong> the whole drawing surface, the file formats, and drawings that live inside Word and PowerPoint. No watermark, no account, no expiry.</p>
       <p>The paid version adds the prediction stack and 3D conformers informing the spectra: <strong>a single payment with a lifetime licence,</strong> no subscription.</p>
+    </div>
+  </div>
+</section>
+
+<section id="editor">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">The free half</p>
+      <h2>A drawing program, not a demo</h2>
+      <p>Everything here is in the free version. It is built for the figure in the paper and the slide in the group meeting, and it reads the files your colleagues already have.</p>
+    </div>
+    <div class="grid">
+      <div class="cell"><h3>Word &amp; PowerPoint</h3><p>Copy on the canvas, paste into a slide: the drawing arrives as an embedded object. Double-click it to edit, save to update. The document still shows the picture on a machine without ChemGraf.</p></div>
+      <div class="cell"><h3>Journal styles</h3><p>Bond length, widths and label fonts set in points, the way author guides state them. Eighteen built-in presets, among them ACS 1996, RSC, Wiley and Nature; existing style sheets import directly.</p></div>
+      <div class="cell"><h3>Files from everyone</h3><p>CDXML and CDX, MOL/SDF V2000 and V3000, SMILES and CXSMILES, SMARTS, reaction files, PDB, XYZ, and CIF expanded into the full unit cell. Out as PDF, SVG, EMF and PNG up to 1200 dpi.</p></div>
+      <div class="cell"><h3>Labels that read right</h3><p>Per-character bold, italic, colour and scripts in any label. About ninety-five contracted groups (Boc, OTBS, Ph…) that stay real atoms underneath, and reagents written as text above an arrow read as chemistry.</p></div>
+      <div class="cell"><h3>Stereo beyond centres</h3><p>Atropisomer axes, allenes, helicenes and cyclophanes are stereo elements in their own right: read from wedges, bold edges or 3D, labelled (P)/(M) or R<sub>p</sub>/S<sub>p</sub>, and written to the files other toolkits read.</p></div>
+      <div class="cell"><h3>Orbitals that know their atom</h3><p>p, sp<sup>n</sup>, σ*, lone pairs, and π/π* across a double bond with lobes sized by a Hückel calculation. They follow the structure when you edit or rotate it.</p></div>
+      <div class="cell"><h3>Reactions from the drawing</h3><p>Reactants, reagents and conditions read from where they sit around the arrow. Stoichiometry table on the canvas, atom mapping, reaction centres, compound numbering and one-click scheme clean-up.</p></div>
+      <div class="cell"><h3>Also in a browser</h3><p>The same editor runs in a browser tab and on touch screens, and embeds in electronic lab notebooks as one frame that takes and returns molfiles and SMILES. <a href="editor/">Try it here.</a></p></div>
+      <div class="cell"><h3>Templates, R-groups, series</h3><p>A searchable template library with your own category. Markush structures with R-sites and query atoms, enumerated into real compounds; "44 R<sup>1</sup> = H" series tables expanded under one skeleton.</p></div>
     </div>
   </div>
 </section>
@@ -272,14 +294,17 @@ footer p{margin:0 0 12px;max-width:64ch}
       <p>Drawing is free. The reason to buy is what happens after you draw — and all of it runs on your own machine.</p>
     </div>
     <div class="grid">
-      <div class="cell"><h3>Nuclei</h3><p>¹H, ¹³C, ¹⁹F, ³¹P shifts. <sup>n</sup>J<sub>HH</sub>, <sup>n</sup>J<sub>FH</sub> and <sup>n</sup>J<sub>FC</sub> couplings.</p></div>
-      <div class="cell"><h3>Real multiplets</h3><p>Spin systems solved by exact diagonalisation, not additivity rules. A quartet is a quartet because the maths says so.</p></div>
-      <div class="cell"><h3>Conformers</h3><p>ETKDG embedding and MMFF94s optimisation in the editor. Boltzmann-weighted ensembles feed the spectra.</p></div>
+      <div class="cell"><h3>Six nuclei</h3><p>¹H, ¹³C, ¹⁹F, ³¹P, ¹¹B and ²⁹Si shifts from models trained in house, with a solvent selector. <sup>n</sup>J<sub>HH</sub>, <sup>n</sup>J<sub>FH</sub> and <sup>n</sup>J<sub>FC</sub> couplings from the conformer geometry.</p></div>
+      <div class="cell"><h3>Real multiplets</h3><p>Spin systems solved by exact diagonalisation, not additivity rules. Diastereotopic CH<sub>2</sub> protons get their own learned shifts, so a ring methylene looks the way it does on the spectrometer.</p></div>
+      <div class="cell"><h3>2D NMR</h3><p>Edited HSQC, phase-sensitive DQF-COSY, HMBC from conformer-averaged long-range couplings, and TOCSY with a mixing-time slider. Contour plots beside the 1D spectrum.</p></div>
+      <div class="cell"><h3>Assign your spectrum</h3><p>Paste a measured ¹³C peak list. The predictions sort the carbons onto your peaks, number the atoms and place a journal-ready assignment line under the structure. The printed values are yours.</p></div>
+      <div class="cell"><h3>Conformers</h3><p>Our own distance-geometry generator and force fields, stereochemistry enforced by construction. Boltzmann-weighted ensembles feed the spectra; the 3D view exports PNG and GIF.</p></div>
       <div class="cell"><h3>Infrared</h3><p>Own model, trained in house. Conformer-averaged rather than single-geometry.</p></div>
-      <div class="cell"><h3>Mass spectrometry</h3><p>EI fragmentation and ESI-MS/MS, with bond dissociation energies informing the fragments.</p></div>
-      <div class="cell"><h3>Physicochemical</h3><p>pK<sub>a</sub> from rules, a GNN and Taft corrections. logP, molar refractivity, BDE, UV/Vis rules.</p></div>
-      <div class="cell"><h3>Steric fields</h3><p>ASO and AEIF occupancy and charge vectors, pose-invariant, dumped as plain arrays.</p></div>
-      <div class="cell"><h3>Molecular passport</h3><p>QED, synthetic accessibility, PAINS / Brenk / NIH / ZINC filters, Lipinski, Veber, Ghose, Egan, Muegge.</p></div>
+      <div class="cell"><h3>Mass spectrometry</h3><p>EI fragmentation with isotope envelopes and ESI-MS/MS. Ion-mobility collision cross sections for [M+H]⁺, [M+Na]⁺ and [M−H]⁻, computed from the conformer ensemble.</p></div>
+      <div class="cell"><h3>Physicochemical</h3><p>pK<sub>a</sub> from rules, a GNN and Taft corrections. logP, molar refractivity, BDE, UV/Vis rules, and an ADME block: solubility, absorption, brain penetration.</p></div>
+      <div class="cell"><h3>Names, both ways</h3><p>Type a name, a CAS number or a trade name and the structure appears, offline. Tested on 76,226 names from 2,894 supporting-information files. Structure to name too, with the name's parts highlighted on the drawing.</p></div>
+      <div class="cell"><h3>Atropisomer barriers</h3><p>For every stereo axis, an estimated rotation barrier, the half-life at 37 °C and its class — free rotation, slow racemisation or stable isomer — with the uncertainty shown.</p></div>
+      <div class="cell"><h3>Molecular passport</h3><p>QED, synthetic accessibility, PAINS / Brenk / NIH / ZINC filters, drug-likeness rule sets, natural-product likeness and a six-gauge dashboard, typeset as an A4 report or mapped across a whole set of molecules.</p></div>
       <div class="cell"><h3>Still growing</h3><p>The stack is the living half of the program. New property and reactivity predictions are added as they become available.</p></div>
     </div>
   </div>
@@ -298,11 +323,12 @@ footer p{margin:0 0 12px;max-width:64ch}
         <p class="price">Free · forever · no account</p>
         <p class="what">The complete structure editor. Everything you need to draw a molecule and put it in a document.</p>
         <ul>
-          <li>The full canvas — bonds, rings, templates, stereo wedges, brackets, arrows, shapes, text</li>
-          <li>Multi-page sheets, alignment, z-order, clean-up layout</li>
-          <li>Every file format: CDXML, MOL/SDF (V2000 and V3000), SMILES, XYZ</li>
-          <li>Export to PNG, SVG and EMF; paste into Word or PowerPoint</li>
-          <li>IUPAC name to structure and structure to name</li>
+          <li>The full canvas — bonds, rings, templates, stereo wedges, brackets, arrows, shapes, text, orbitals</li>
+          <li>Template library, R-groups and query atoms, compound series</li>
+          <li>Multi-page sheets, alignment, z-order, clean-up layout, journal style presets</li>
+          <li>Every file format: CDXML, CDX, MOL/SDF (V2000 and V3000), SMILES, SMARTS, reaction files, CIF, PDB, XYZ</li>
+          <li>Export to PDF, SVG, EMF and PNG; embedded, editable objects in Word and PowerPoint</li>
+          <li>Reaction perception, stoichiometry table, atom mapping</li>
           <li>Formula, mass, exact mass, structure checking</li>
           <li>No watermark, no page limit, no expiry, nothing uploaded</li>
         </ul>
@@ -314,14 +340,16 @@ footer p{margin:0 0 12px;max-width:64ch}
         <p class="price">One payment · lifetime licence</p>
         <p class="what">Everything above, plus the prediction stack. Buy it once, at a price aimed at individuals rather than institutions.</p>
         <ul>
-          <li>¹H, ¹³C, ¹⁹F and ³¹P NMR with real spin-system simulation</li>
-          <li>Coupling constants and multiplets solved, not guessed from rules</li>
-		  <li>3D view with conformers and MMFF94s minimisation</li>
+          <li>¹H, ¹³C, ¹⁹F, ³¹P, ¹¹B and ²⁹Si NMR with real spin-system simulation</li>
+          <li>2D NMR: edited HSQC, DQF-COSY, HMBC and TOCSY</li>
+          <li>Assignment of a measured ¹³C peak list onto the structure</li>
+          <li>3D view with conformers, MMFF94s minimisation, PNG and GIF export</li>
           <li>Infrared, conformer-averaged, from a model trained here</li>
-          <li>EI-MS fragmentation and ESI-MS/MS</li>
-          <li>pK<sub>a</sub>, logP, molar refractivity, bond dissociation energies</li>
-          <li>Boltzmann-weighted conformer ensembles feeding the spectra</li>
-          <li>Medchem passport: QED, synthetic accessibility, PAINS and friends</li>
+          <li>EI-MS fragmentation, ESI-MS/MS and ion-mobility cross sections</li>
+          <li>pK<sub>a</sub>, logP, ADME, molar refractivity, bond dissociation energies</li>
+          <li>IUPAC name to structure and structure to name</li>
+          <li>Atropisomer rotation barriers and half-lives</li>
+          <li>Medchem passport, A4 molecule report and chemical space map</li>
           <li>Updates for the version you bought, without a renewal date</li>
         </ul>
       </div>
